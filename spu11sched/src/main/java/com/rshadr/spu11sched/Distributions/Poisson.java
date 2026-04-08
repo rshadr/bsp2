@@ -7,17 +7,12 @@ import com.rshadr.spu11sched.Distribution;
 
 
 public final class Poisson implements Distribution {
-  private int mLambda_;
+  private final int _lambda;
 
-  public
+  private
   Poisson (int lambda)
-  throws IllegalArgumentException
   {
-    if (lambda <= 0) {
-      throw new IllegalArgumentException("Lambda must be strictly positive");
-    }
-
-    mLambda_ = lambda;
+    _lambda = lambda;
   }
 
 
@@ -39,7 +34,38 @@ public final class Poisson implements Distribution {
   {
     int k = forwardDelta;
 
-    return (Math.pow(mLambda_, k) * Math.exp(-k) * inverseFactorial_(k));
+    return (Math.pow(_lambda, k) * Math.exp(-k) * inverseFactorial_(k));
+  }
+
+
+  public static class Builder implements Distribution.Builder {
+    private int _lambda;
+
+    public
+    Builder ()
+    {
+      _lambda = 1;
+    }
+
+
+    public Builder
+    lambda (int lambda)
+    throws IllegalArgumentException
+    {
+      if (lambda < 1) {
+        throw new IllegalArgumentException("lambda must be at least 1");
+      }
+
+      _lambda = lambda;
+      return this;
+    }
+
+
+    public Distribution
+    build ()
+    {
+      return new Poisson(_lambda);
+    }
   }
 }
 

@@ -20,8 +20,9 @@ public class Task {
         int minimumInterArrivalTime)
   throws IllegalArgumentException
   {
-    if (priority < 0 || priority >= 100) {
-      throw new IllegalArgumentException("Task priority must be between 0 and 99");
+    if (priority < 0 || priority >= Configuration.MAX_TASKS) {
+      throw new IllegalArgumentException(
+       "Task priority must be between 0 and "+(Configuration.MAX_TASKS - 1));
     }
 
     if (initialOffset < 0) {
@@ -48,4 +49,38 @@ public class Task {
     mMinIAT = minimumInterArrivalTime;
   }
 
+
+  public int
+  getPriority ()
+  {
+    return mPriority;
+  }
+
+
+  public int
+  getWcet ()
+  {
+    return mWcet;
+  }
+
+
+  public int
+  getInitialOffset ()
+  {
+    return mInitialOffset;
+  }
+
+
+  public int
+  getRelativeDeadline ()
+  {
+    return mRelativeDeadline;
+  }
+
+
+  public int
+  getMinIAT ()
+  {
+    return mMinIAT;
+  }
 }

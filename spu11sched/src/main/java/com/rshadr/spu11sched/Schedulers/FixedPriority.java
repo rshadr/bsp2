@@ -3,14 +3,14 @@
  * See LICENSE for details
  */
 package com.rshadr.spu11sched.Schedulers;
-import com.rshadr.spu11sched.*;
 
+import com.rshadr.spu11sched.*;
 import java.util.HashSet;
 
-final class FixedPriority implements Scheduler {
+public final class FixedPriority implements Scheduler {
   private HashSet<Job> readyList;
 
-  public
+  private
   FixedPriority ()
   {
     readyList = new HashSet<Job>(67);
@@ -24,7 +24,7 @@ final class FixedPriority implements Scheduler {
 
 
   public void
-  onTerminated (Job job)
+  onTerminate (Job job)
   {
   }
 
@@ -32,6 +32,22 @@ final class FixedPriority implements Scheduler {
   public void
   schedule ()
   {
+  }
+
+
+  public static final class Builder implements Scheduler.Builder {
+    public
+    Builder ()
+    {
+    }
+
+
+    public FixedPriority
+    build ()
+    {
+      FixedPriority fp = new FixedPriority();
+      return fp;
+    }
   }
 }
 
