@@ -3,6 +3,7 @@
  * See LICENSE for details
  */
 package com.rshadr.spu11sched;
+
 import com.rshadr.spu11sched.Schedulers.*;
 import com.rshadr.spu11sched.Distributions.*;
 import com.rshadr.spu11sched.Trackers.*;
@@ -12,9 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**
- * Hello world!
- */
+
 public class App
 {
   private static Scanner
@@ -45,6 +44,9 @@ public class App
 
       int maxDuration = Integer.parseInt(parts[0]);
       cfg.maxDuration(maxDuration);
+
+      /* XXX */
+      cfg.maxSporadicDelay(0);
 
       int numProcessors = Integer.parseInt(parts[1]);
       cfg.numProcessors(numProcessors);
@@ -110,7 +112,7 @@ public class App
     Scanner scanner = App.makeScannerForFile(args[0]);
     Configuration.Builder configBuilder = App.parseConfig(scanner);
 
-    Simulation sim = new Simulation(configBuilder, 121);
+    Simulation sim = Simulation.withConfigAndSeed(configBuilder, 121);
     sim.run();
     sim.output();
   }

@@ -16,25 +16,51 @@ public final class Configuration
   public static final int MAX_TRACKERS = 20;
 
   private final WeakReference<Simulation> _simulation;
+  private final int _maxDuration;
+  private final int _numProcessors;
+  private final int _maxSporadicDelay;
+  private final int _freqScale;
 
   private
-  Configuration (Simulation simulation)
+  Configuration (Simulation simulation,
+                 int maxDuration,
+                 int numProcessors,
+                 int maxSporadicDelay,
+                 int freqScale)
   {
-    this._simulation = new WeakReference<Simulation>(simulation);
+    _simulation = new WeakReference(simulation);
+    _maxDuration = maxDuration;
+    _numProcessors = numProcessors;
+    _maxSporadicDelay = maxSporadicDelay;
+    _freqScale = freqScale;
   }
 
 
   public int
   getMaxDuration ()
   {
-    return this._simulation.get().getMaxDuration();
+    return _maxDuration;
   }
 
 
   public int
   getNumProcessors ()
   {
-    return this._simulation.get().getNumProcessors();
+    return _numProcessors;
+  }
+
+
+  public int
+  getMaxSporadicDelay ()
+  {
+    return _maxSporadicDelay;
+  }
+
+
+  public int
+  getFreqScale ()
+  {
+    return _freqScale;
   }
 
 
@@ -42,10 +68,14 @@ public final class Configuration
   {
     protected int maxDuration;
     protected int numProcessors;
+    protected int maxSporadicDelay;
+    protected int freqScale;
     protected Scheduler.Builder schedulerBuilder;
+    /* XXX: use direct instance instead */
     protected Distribution.Builder distributionBuilder;
-    protected Task[] tasks;
-    protected int numTasks;
+
+    protected ArrayList<Task> tasks;
+
     protected List<Tracker.Builder> trackerBuilders;
     protected OutputBackend.Builder outputBackendBuilder;
 
@@ -55,8 +85,9 @@ public final class Configuration
     {
       maxDuration = 100;
       numProcessors = 1;
-      tasks = new Task[MAX_TASKS];
-      numTasks = 0;
+      maxSporadicDelay = 0;
+      freqScale = 1000;
+      tasks = new ArrayList<Task>(MAX_TASKS);
       trackerBuilders = new ArrayList<Tracker.Builder>();
     }
 
@@ -104,19 +135,46 @@ public final class Configuration
 
 
     public Builder
+    maxSporadicDelay (int maxSporadicDelay)
+    throws IllegalArgumentException
+    {
+      if (maxSporadicDelay < 0) {
+        throw new IllegalArgumentException(
+         "Maximum sporadic delay must be greater than 0");
+      }
+
+      this.maxSporadicDelay = maxSporadicDelay;
+      return this;
+    }
+
+
+    public Builder
+    freqScale (int freqScale)
+    throws IllegalArgumentException
+    {
+      if (freqScale < 10) {
+        throw new IllegalArgumentException(
+         "Frequency scale must be at least 10");
+      }
+
+      this.freqScale = freqScale;
+      return this;
+    }
+
+
+    public Builder
     addTask (Task task)
     throws IllegalArgumentException
     {
-      if (this.numTasks == MAX_TASKS) {
+      if (tasks.size() == MAX_TASKS) {
         throw new IllegalArgumentException("Excess task");
       }
 
-      if (this.tasks[task.mPriority] != null) {
+      if (tasks.stream().anyMatch(t -> t.priority() == task.priority())) {
         throw new IllegalArgumentException(
-         "Task with priority "+task.mPriority+" existing");
+         "Task with priority "+task.priority()+" existing");
       }
-      this.tasks[task.mPriority] = task;
-      this.numTasks += 1;
+      this.tasks.add(task);
       return this;
     }
 
@@ -161,7 +219,12 @@ public final class Configuration
     protected Configuration
     build (Simulation simulation)
     {
-      Configuration config = new Configuration(simulation);
+      Configuration config = new Configuration(
+       simulation,
+       maxDuration,
+       numProcessors,
+       maxSporadicDelay,
+       freqScale);
       return config;
     }
   }

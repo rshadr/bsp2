@@ -7,6 +7,12 @@ package com.rshadr.spu11sched;
 public interface Tracker {
   public void onInitialize (Configuration config);
   public void onActiveTick ();
+  // public void onJobActivated (int t, Job job);
+  // public void onJobTerminated (int t, Job job);
+  public Data onFinish ();
+
+  public static interface Data {
+  };
 
   public static interface Builder {
     public Tracker build();

@@ -1,1 +1,3 @@
-- "clone" requirement for Distribution and Scheduler
+[+] Use JSON instead of SPC for run specification (it's ugly)
+[!] Slack tracker
+[!] Histogram

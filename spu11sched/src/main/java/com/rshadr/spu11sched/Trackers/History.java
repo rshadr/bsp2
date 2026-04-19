@@ -2,7 +2,6 @@
  * Copyright 2026 rshadr (rshadr@assembly-cave.tw)
  * See LICENSE for details
  */
-
 package com.rshadr.spu11sched;
 
 public final class History implements Tracker
@@ -29,6 +28,30 @@ public final class History implements Tracker
   public void
   onActiveTick ()
   {
+    // activated jobs?
+    // terminated jobs?
+    // decisions
+  }
+
+
+  public Data
+  onFinish ()
+  {
+    Data data = new Data(this);
+    return data;
+  }
+
+
+  public static final class Data implements Tracker.Data {
+    public final int maxDuration;
+    public final int numProcessors;
+
+    private
+    Data(History history)
+    {
+      this.maxDuration = history._maxDuration;
+      this.numProcessors = history._numProcessors;
+    }
   }
 
 

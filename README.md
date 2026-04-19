@@ -11,9 +11,11 @@ have unique priorities.
 - `spu11sched`: Java implementation (as a Maven project)
 
 ## Compiling and Running
-Enter the `spu11sched` directory and run `mvn install` to compile.
+Enter the `spu11sched` directory and run
+`mvn package assembly:single` to compile.
 
-Then, run `java -ea -jar target/spu11sched-1.0-SNAPSHOT.jar test.spc`
+Then, run
+`java -jar target/spu11sched-1.0-SNAPSHOT-jar-with-dependencies.jar test.spc`
 
 
 ## License

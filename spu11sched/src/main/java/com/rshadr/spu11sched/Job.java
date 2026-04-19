@@ -5,64 +5,93 @@
 package com.rshadr.spu11sched;
 
 
-public class Job
+public final class Job
 {
-  protected final Task mTask;
-  protected final int mOffset;
-  protected int mRemaining;
-  protected final int mAbsoluteDeadline;
-  protected boolean mIsOnline;
+  private final int _priority;
+  protected final Task _task;
+  protected final int _startInstant;
+  protected int _remainingTime;
+  protected final int _absoluteDeadline;
+  protected Processor _processor;
 
 
-  /*
-   * Initial job
-   */
-  protected
-  Job (Task task)
+  private
+  Job (Task task, int startTime)
   {
-    mTask = task;
-
-    mOffset = task.mInitialOffset;
-    mRemaining = task.mWcet;
-    mAbsoluteDeadline = mOffset + task.mRelativeDeadline;
-
-    mIsOnline = false;
+    _task = task;
+    _priority = task.priority();
+    _startInstant = startTime;
+    _remainingTime = task.wcet();
+    _absoluteDeadline = _startInstant + task.relativeDeadline();
+    _processor = null;
   }
 
 
-  /*
-   * Sporadic reoccurences
-   */
-  protected
-  Job (Job previousJob, int curTime)
+  protected static Job
+  forTaskAndTime (Task task, int startTime)
   {
-    mTask = previousJob.mTask;
+    return new Job(task, startTime);
+  }
 
-    mOffset = curTime;
-    mRemaining = mTask.mWcet;
-    mAbsoluteDeadline = mOffset + mTask.mRelativeDeadline;
-    mIsOnline = false;
+
+  public Task
+  getTask ()
+  {
+    return _task;
   }
 
 
   public int
-  getOffset ()
+  getPriority ()
   {
-    return mOffset;
+    return _priority;
+  }
+
+
+  /*
+   * XXX: change name to less ambiguous
+   */
+  public int
+  getStartInstant ()
+  {
+    return _startInstant;
   }
 
 
   public int
   getRemaining ()
   {
-    return mRemaining;
+    return _remainingTime;
+  }
+
+
+  protected void
+  advance (int forwardDelta)
+  throws IllegalArgumentException
+  {
+    if (forwardDelta <= 0) {
+      throw new IllegalArgumentException("forwardDelta must be strictly positive");
+    }
+
+    if (forwardDelta > _remainingTime) {
+      throw new IllegalArgumentException("forwardDelta exceeds remaining time");
+    }
+
+    _remainingTime -= forwardDelta;
   }
 
 
   public int
   getAbsoluteDeadline ()
   {
-    return mAbsoluteDeadline;
+    return _absoluteDeadline;
+  }
+
+
+  public Processor
+  getProcessor ()
+  {
+    return _processor;
   }
 }
 
