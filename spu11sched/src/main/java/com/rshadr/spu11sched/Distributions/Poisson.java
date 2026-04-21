@@ -38,7 +38,7 @@ public final class Poisson implements Distribution {
   }
 
 
-  public static class Builder implements Distribution.Builder {
+  public static class Builder {
     private int _lambda;
 
     public

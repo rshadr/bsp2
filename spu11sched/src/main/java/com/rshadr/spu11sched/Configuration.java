@@ -15,20 +15,23 @@ public final class Configuration
   public static final int MAX_TASKS = 100;
   public static final int MAX_TRACKERS = 20;
 
-  private final WeakReference<Simulation> _simulation;
+  private final Scheduler.Builder _schedulerBuilder;
+  private final Distribution _distribution;
   private final int _maxDuration;
   private final int _numProcessors;
   private final int _maxSporadicDelay;
   private final int _freqScale;
 
   private
-  Configuration (Simulation simulation,
+  Configuration (Scheduler.Builder schedulerBuilder,
+                 Distribution distribution,
                  int maxDuration,
                  int numProcessors,
                  int maxSporadicDelay,
                  int freqScale)
   {
-    _simulation = new WeakReference(simulation);
+    _schedulerBuilder = schedulerBuilder;
+    _distribution = distribution;
     _maxDuration = maxDuration;
     _numProcessors = numProcessors;
     _maxSporadicDelay = maxSporadicDelay;
@@ -66,13 +69,12 @@ public final class Configuration
 
   public final static class Builder
   {
+    protected Scheduler.Builder schedulerBuilder;
+    protected Distribution distribution;
     protected int maxDuration;
     protected int numProcessors;
     protected int maxSporadicDelay;
     protected int freqScale;
-    protected Scheduler.Builder schedulerBuilder;
-    /* XXX: use direct instance instead */
-    protected Distribution.Builder distributionBuilder;
 
     protected ArrayList<Task> tasks;
 
@@ -83,12 +85,32 @@ public final class Configuration
     public
     Builder ()
     {
+      schedulerBuilder = null;
+      distribution = new com.rshadr.spu11sched.Distributions.Null();
       maxDuration = 100;
       numProcessors = 1;
       maxSporadicDelay = 0;
       freqScale = 1000;
+
       tasks = new ArrayList<Task>(MAX_TASKS);
       trackerBuilders = new ArrayList<Tracker.Builder>();
+      outputBackendBuilder = null;
+    }
+
+
+    public Builder
+    schedulerBuilder (Scheduler.Builder schedulerBuilder)
+    {
+      this.schedulerBuilder = schedulerBuilder;
+      return this;
+    }
+
+
+    public Builder
+    distribution (Distribution distribution)
+    {
+      this.distribution = distribution;
+      return this;
     }
 
 
@@ -114,22 +136,6 @@ public final class Configuration
       }
       this.numProcessors = numProcessors;
 
-      return this;
-    }
-
-
-    public Builder
-    schedulerBuilder (Scheduler.Builder schedulerBuilder)
-    {
-      this.schedulerBuilder = schedulerBuilder;
-      return this;
-    }
-
-
-    public Builder
-    distributionBuilder (Distribution.Builder distributionBuilder)
-    {
-      this.distributionBuilder = distributionBuilder;
       return this;
     }
 
@@ -204,9 +210,9 @@ public final class Configuration
          "Scheduler builder required");
       }
 
-      if (distributionBuilder == null) {
+      if (distribution == null) {
         throw new IllegalArgumentException(
-         "Distribution builder required");
+         "Distribution required");
       }
 
       if (outputBackendBuilder == null) {
@@ -217,10 +223,11 @@ public final class Configuration
 
 
     protected Configuration
-    build (Simulation simulation)
+    build ()
     {
       Configuration config = new Configuration(
-       simulation,
+       schedulerBuilder,
+       distribution,
        maxDuration,
        numProcessors,
        maxSporadicDelay,

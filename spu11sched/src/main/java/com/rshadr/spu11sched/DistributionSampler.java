@@ -13,16 +13,19 @@ final class DistributionSampler {
   private final int[] _delayTable;
   private final int _delayTableSize;
   private final int _freqScale;
+  private final long _seed;
 
 
   protected
   DistributionSampler (Distribution distribution,
                        int maxDelay,
-                       int freqScale) {
+                       int freqScale,
+                       long seed) {
     _distribution = distribution;
     _maxDelay = maxDelay;
     _freqScale = freqScale;
-    _random = new Random();
+    _seed = seed;
+    _random = new Random(_seed);
 
     int delayTableSize = 0;
     int[] delayFreqsScaled = new int[maxDelay + 1];

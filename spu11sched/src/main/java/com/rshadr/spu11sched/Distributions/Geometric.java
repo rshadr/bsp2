@@ -24,7 +24,7 @@ public final class Geometric implements Distribution {
   }
 
 
-  public static final class Builder implements Distribution.Builder {
+  public static final class Builder {
     private double _p;
 
     public

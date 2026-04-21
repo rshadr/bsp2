@@ -56,17 +56,20 @@ public class App
        */
       cfg.schedulerBuilder(new FixedPriority.Builder());
 
-      Distribution.Builder distributionBuilder = null;
-      if ("geometric".equals(parts[2])) {
+      Distribution distribution = null;
+      if ("null".equals(parts[2])) {
+        /* ignore rest */
+        distribution = new Null();
+      } else if ("geometric".equals(parts[2])) {
         double p = Double.parseDouble(parts[3]);
-        distributionBuilder = new Geometric.Builder().p(p);
+        distribution = new Geometric.Builder().p(p).build();
       } else if ("poisson".equals(parts[2])) {
         int lambda = Integer.parseInt(parts[3]);
-        distributionBuilder = new Poisson.Builder().lambda(lambda);
+        distribution = new Poisson.Builder().lambda(lambda).build();
       } else {
         throw new IllegalArgumentException("Invalid distribution name");
       }
-      cfg.distributionBuilder(distributionBuilder);
+      cfg.distribution(distribution);
 
       /*
        * XXX: Read trackers off config
@@ -113,7 +116,9 @@ public class App
     Configuration.Builder configBuilder = App.parseConfig(scanner);
 
     Simulation sim = Simulation.withConfigAndSeed(configBuilder, 121);
-    sim.run();
+    try {
+      sim.run();
+    } catch (DeadlineMissedException e) {}
     sim.output();
   }
 }

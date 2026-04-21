@@ -26,16 +26,21 @@ public final class History implements Tracker
 
 
   public void
-  onActiveTick ()
+  onJobActivated (int t, Job job)
   {
-    // activated jobs?
-    // terminated jobs?
-    // decisions
+    // ...
+  }
+
+
+  public void
+  onJobTerminated (int t, Job job)
+  {
+    // ...
   }
 
 
   public Data
-  onFinish ()
+  onFinish (int t, Exception reason)
   {
     Data data = new Data(this);
     return data;

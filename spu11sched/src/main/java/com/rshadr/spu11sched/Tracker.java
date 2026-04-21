@@ -6,10 +6,11 @@ package com.rshadr.spu11sched;
 
 public interface Tracker {
   public void onInitialize (Configuration config);
-  public void onActiveTick ();
-  // public void onJobActivated (int t, Job job);
-  // public void onJobTerminated (int t, Job job);
-  public Data onFinish ();
+
+  public void onJobActivated (int t, Job job);
+  public void onJobTerminated (int t, Job job);
+  
+  public Data onFinish (int t, Exception reason);
 
   public static interface Data {
   };

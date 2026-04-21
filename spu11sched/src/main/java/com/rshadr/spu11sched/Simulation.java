@@ -31,6 +31,7 @@ public class Simulation
 
   private final ArrayList<Job> _finishedJobs;
   private final HashSet<Job> _liveJobs;
+  private List<Tracker.Data> _trackerDatas;
 
   private final DistributionSampler _distributionSampler;
   private final PriorityQueue<SporadicReoccurence> _reoccuringTasks;
@@ -41,11 +42,11 @@ public class Simulation
   private final OutputBackend _outputBackend;
 
   private
-  Simulation (Configuration.Builder configBuilder, int seed)
+  Simulation (Configuration.Builder configBuilder, long seed)
   throws IllegalArgumentException
   {
     configBuilder.validate();
-    _config = configBuilder.build(this);
+    _config = configBuilder.build();
 
     _tasks = Collections.unmodifiableList(configBuilder.tasks);
 
@@ -65,13 +66,13 @@ public class Simulation
 
 
     _scheduler = configBuilder.schedulerBuilder.build(_processors);
-    _distribution = configBuilder.distributionBuilder.build();
+    _distribution = configBuilder.distribution;
 
     /*
      * Sporadic delays
      */
     _distributionSampler = new DistributionSampler(
-     _distribution, _config.getMaxSporadicDelay(), _config.getFreqScale());
+     _distribution, _config.getMaxSporadicDelay(), _config.getFreqScale(), seed);
 
     _reoccuringTasks = new PriorityQueue(
      Comparator.comparing(SporadicReoccurence::restartInstant));
@@ -90,7 +91,7 @@ public class Simulation
 
   static Simulation
   withConfigAndSeed (Configuration.Builder configBuilder,
-                     int seed)
+                     long seed)
   throws IllegalArgumentException
   {
     return new Simulation(configBuilder, seed);
@@ -101,18 +102,21 @@ public class Simulation
   runTick_ ()
   throws DeadlineMissedException
   {
+    /*
+     * Check deadlines first of all
+     */
     for (Job job : _liveJobs) {
       if (_curTime >= job.getAbsoluteDeadline()) {
         throw new DeadlineMissedException(job, _curTime);
       }
     }
 
-    /*
-     * Activate reoccuring jobs
-     */
     for (SporadicReoccurence reocc = _reoccuringTasks.peek();
          reocc != null && reocc.restartInstant() <= _curTime;
          reocc = _reoccuringTasks.peek()) {
+      /*
+       * Activate job
+       */
       Task task = reocc.task();
       Job job = Job.forTaskAndTime(task, _curTime);
       _liveJobs.add(job);
@@ -139,6 +143,7 @@ public class Simulation
 
     for (Scheduler.Decision decision : decisions) {
       System.out.println(_curTime + " :: Decision: "+decision.job().getPriority());
+      /* XXX: misleading name "preempt" */
       decision.processor().preempt(decision.job());
     }
 
@@ -163,8 +168,21 @@ public class Simulation
   {
     _trackers.forEach(t -> t.onInitialize(_config));
 
-    for (_curTime = 0; _curTime < _config.getMaxDuration(); ++_curTime) {
-      runTick_();
+    try {
+      for (_curTime = 0; _curTime < _config.getMaxDuration(); ++_curTime) {
+        runTick_();
+      }
+      _trackerDatas = _trackers
+       .stream()
+       .map((tracker) -> tracker.onFinish(_curTime, null))
+       .collect(Collectors.toUnmodifiableList());
+    } catch (DeadlineMissedException e) {
+      _trackerDatas = _trackers
+       .stream()
+       .map((tracker) -> tracker.onFinish(_curTime, e))
+       .collect(Collectors.toUnmodifiableList());
+
+      throw e;
     }
   }
 
@@ -173,25 +191,8 @@ public class Simulation
   output ()
   throws java.io.IOException
   {
-    List<Tracker.Data> trackerDatas = _trackers
-     .stream()
-     .map((tracker) -> tracker.onFinish())
-     .collect(Collectors.toUnmodifiableList());
-
-    _outputBackend.outputTrackerDatas(trackerDatas);
+    _outputBackend.outputTrackerDatas(_trackerDatas);
   }
 
-
-  protected Scheduler
-  getScheduler ()
-  {
-    return _scheduler;
-  }
-
-  protected Distribution
-  getDistribution ()
-  {
-    return _distribution;
-  }
 }
 
