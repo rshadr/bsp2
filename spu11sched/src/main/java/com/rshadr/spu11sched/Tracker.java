@@ -3,14 +3,17 @@
  * See LICENSE for details
  */
 package com.rshadr.spu11sched;
+import java.util.List;
 
-public interface Tracker {
-  public void onInitialize (Configuration config);
+public abstract class Tracker {
+  public void onInitialize (Configuration config) { };
 
-  public void onJobActivated (int t, Job job);
-  public void onJobTerminated (int t, Job job);
+  public void onJobActivated (int t, Job job) { };
+  public void onJobTerminated (int t, Job job) { };
+
+  public void onSchedule (int t, List<Scheduler.Decision> decisions) { };
   
-  public Data onFinish (int t, Exception reason);
+  public abstract Data onFinish (int t, Exception reason);
 
   public static interface Data {
   };

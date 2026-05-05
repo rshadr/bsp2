@@ -2,13 +2,13 @@
  * Copyright 2026 rshadr (rshadr@assembly-cave.tw)
  * See LICENSE for details
  */
-
 package com.rshadr.spu11sched;
 
 import java.lang.IllegalArgumentException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public final class Configuration
 {
@@ -20,7 +20,7 @@ public final class Configuration
   private final int _maxDuration;
   private final int _numProcessors;
   private final int _maxSporadicDelay;
-  private final int _freqScale;
+  private final List<Task> _tasks;
 
   private
   Configuration (Scheduler.Builder schedulerBuilder,
@@ -28,14 +28,14 @@ public final class Configuration
                  int maxDuration,
                  int numProcessors,
                  int maxSporadicDelay,
-                 int freqScale)
+                 List<Task> tasks)
   {
     _schedulerBuilder = schedulerBuilder;
     _distribution = distribution;
     _maxDuration = maxDuration;
     _numProcessors = numProcessors;
     _maxSporadicDelay = maxSporadicDelay;
-    _freqScale = freqScale;
+    _tasks = tasks;
   }
 
 
@@ -60,10 +60,10 @@ public final class Configuration
   }
 
 
-  public int
-  getFreqScale ()
+  public List<Task>
+  getTasks ()
   {
-    return _freqScale;
+    return _tasks;
   }
 
 
@@ -74,7 +74,6 @@ public final class Configuration
     protected int maxDuration;
     protected int numProcessors;
     protected int maxSporadicDelay;
-    protected int freqScale;
 
     protected ArrayList<Task> tasks;
 
@@ -90,7 +89,6 @@ public final class Configuration
       maxDuration = 100;
       numProcessors = 1;
       maxSporadicDelay = 0;
-      freqScale = 1000;
 
       tasks = new ArrayList<Task>(MAX_TASKS);
       trackerBuilders = new ArrayList<Tracker.Builder>();
@@ -146,24 +144,10 @@ public final class Configuration
     {
       if (maxSporadicDelay < 0) {
         throw new IllegalArgumentException(
-         "Maximum sporadic delay must be greater than 0");
+         "Maximum sporadic delay must be >= 0");
       }
 
       this.maxSporadicDelay = maxSporadicDelay;
-      return this;
-    }
-
-
-    public Builder
-    freqScale (int freqScale)
-    throws IllegalArgumentException
-    {
-      if (freqScale < 10) {
-        throw new IllegalArgumentException(
-         "Frequency scale must be at least 10");
-      }
-
-      this.freqScale = freqScale;
       return this;
     }
 
@@ -180,14 +164,19 @@ public final class Configuration
         throw new IllegalArgumentException(
          "Task with priority "+task.priority()+" existing");
       }
-      this.tasks.add(task);
+      tasks.add(task);
       return this;
     }
 
 
     public Builder
     addTrackerBuilder (Tracker.Builder trackerBuilder)
+    throws IllegalArgumentException
     {
+      if (trackerBuilders.size() == MAX_TRACKERS) {
+        throw new IllegalArgumentException("Excess tracker");
+      }
+
       this.trackerBuilders.add(trackerBuilder);
       return this;
     }
@@ -231,7 +220,7 @@ public final class Configuration
        maxDuration,
        numProcessors,
        maxSporadicDelay,
-       freqScale);
+       Collections.unmodifiableList(tasks));
       return config;
     }
   }

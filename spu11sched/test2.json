@@ -1,0 +1,36 @@
+{
+  "maxDuration" : 6,
+  "numProcessors" : 2,
+  "maxSporadicDelay" : 0,
+  "scheduler": "FixedPriority",
+  "distribution": "null",
+
+  "tasks": [
+    {
+      "priority": 1
+      "initialStartTime": 0,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 3
+    },
+
+    {
+      "priority": 2
+      "initialStartTime": 0,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 3
+    },
+
+    {
+      "priority": 3,
+      "initialStartTime": 0,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 3,
+    }
+  ],
+
+  "trackers": ["History", "SlackTime"]
+}
+

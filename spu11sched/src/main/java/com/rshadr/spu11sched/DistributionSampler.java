@@ -10,38 +10,24 @@ final class DistributionSampler {
   private final Distribution _distribution;
   private final Random _random;
   private final int _maxDelay;
-  private final int[] _delayTable;
-  private final int _delayTableSize;
-  private final int _freqScale;
+  private final double[] _cdfArray;
   private final long _seed;
 
 
   protected
   DistributionSampler (Distribution distribution,
                        int maxDelay,
-                       int freqScale,
                        long seed) {
     _distribution = distribution;
     _maxDelay = maxDelay;
-    _freqScale = freqScale;
     _seed = seed;
     _random = new Random(_seed);
+    _cdfArray = new double[_maxDelay + 1];
 
-    int delayTableSize = 0;
-    int[] delayFreqsScaled = new int[maxDelay + 1];
-    for (int i = 0; i <= maxDelay; ++i) {
-      delayFreqsScaled[i] =
-       (int)(_freqScale * distribution.restartProbability(i));
-      delayTableSize += delayFreqsScaled[i];
-    }
-
-    _delayTableSize = delayTableSize;
-
-    _delayTable = new int[_delayTableSize];
-    for (int i = 0, j = 0; i <= _maxDelay; ++i) {
-      for (int k = 0; k < delayFreqsScaled[i]; ++k, ++j) {
-        _delayTable[j] = i;
-      }
+    double cdfY = 0.0;
+    for (int i = 0; i <= _maxDelay; ++i) {
+      cdfY += _distribution.restartProbability(i);
+      _cdfArray[i] = cdfY;
     }
   }
 
@@ -49,13 +35,17 @@ final class DistributionSampler {
   protected int
   getNext ()
   {
-    int pos = _random.nextInt(0, _delayTableSize);
-    return _delayTable[pos];
-  }
+    double v = _random.nextDouble();
 
-  /*
-   * XXX: CDF 0 to 50 (=prob. x or lower)
-   * Binary search with double
-   */
+    int i = 0;
+    for (; i <= _maxDelay; ++i) {
+      if (_cdfArray[i] > v) {
+        return i;
+      }
+    }
+
+    /* unreachable? */
+    return _maxDelay;
+  }
 }
 

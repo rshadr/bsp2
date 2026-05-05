@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 rshadr
+ * Copyright 2026 rshadr (rshadr@assembly-cave.tw)
  * See LICENSE for details
  */
 #include <stdio.h>

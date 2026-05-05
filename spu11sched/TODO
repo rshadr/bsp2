@@ -1,3 +1,8 @@
 [+] Use JSON instead of SPC for run specification (it's ugly)
-[!] Slack tracker
-[!] Histogram
+[+] Reflection to ensure "Data" classes for output are of valid fmt
+
+29.04.2026
+[ ] Add JSON Parser
+[ ] Fix skipped tick
+-> See Kanri
+

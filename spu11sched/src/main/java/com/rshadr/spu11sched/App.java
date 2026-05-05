@@ -38,18 +38,18 @@ public class App
     do {
       String firstLine = scanner.nextLine();
       String[] parts = firstLine.split(" ");
-      if (parts.length != 4) {
+      if (parts.length != 5) {
         throw new IllegalArgumentException("First line must contain 4 tokens");
       }
 
       int maxDuration = Integer.parseInt(parts[0]);
       cfg.maxDuration(maxDuration);
 
-      /* XXX */
-      cfg.maxSporadicDelay(0);
-
       int numProcessors = Integer.parseInt(parts[1]);
       cfg.numProcessors(numProcessors);
+
+      int maxSporadicDelay = Integer.parseInt(parts[2]);
+      cfg.maxSporadicDelay(maxSporadicDelay);
 
       /*
        * XXX: Read scheduler off config
@@ -57,14 +57,14 @@ public class App
       cfg.schedulerBuilder(new FixedPriority.Builder());
 
       Distribution distribution = null;
-      if ("null".equals(parts[2])) {
+      if ("null".equals(parts[3])) {
         /* ignore rest */
         distribution = new Null();
-      } else if ("geometric".equals(parts[2])) {
-        double p = Double.parseDouble(parts[3]);
+      } else if ("geometric".equals(parts[3])) {
+        double p = Double.parseDouble(parts[4]);
         distribution = new Geometric.Builder().p(p).build();
-      } else if ("poisson".equals(parts[2])) {
-        int lambda = Integer.parseInt(parts[3]);
+      } else if ("poisson".equals(parts[3])) {
+        int lambda = Integer.parseInt(parts[4]);
         distribution = new Poisson.Builder().lambda(lambda).build();
       } else {
         throw new IllegalArgumentException("Invalid distribution name");
@@ -75,6 +75,7 @@ public class App
        * XXX: Read trackers off config
        */
       cfg.addTrackerBuilder(new History.Builder());
+      cfg.addTrackerBuilder(new SlackTime.Builder());
 
       /*
        * XXX: Read output backend off config

@@ -12,10 +12,15 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 import java.util.Collections;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 public class Simulation
 {
+  private static final Logger LOGGER =
+   Logger.getLogger(Simulation.class.getName());
+
   private static final record SporadicReoccurence(
    Task task, int restartInstant){}
 
@@ -25,9 +30,7 @@ public class Simulation
   private final Scheduler _scheduler;
   private final Distribution _distribution;
 
-  private final List<Task> _tasks;
-
-  private List<Processor> _processors;
+  private final ProcessorGroup _processorGroup;
 
   private final ArrayList<Job> _finishedJobs;
   private final HashSet<Job> _liveJobs;
@@ -48,35 +51,30 @@ public class Simulation
     configBuilder.validate();
     _config = configBuilder.build();
 
-    _tasks = Collections.unmodifiableList(configBuilder.tasks);
 
-    do {
-      int numProcessors = configBuilder.numProcessors;
-      ArrayList<Processor> processors = new ArrayList<Processor>(numProcessors);
-
-      for (int i = 0; i < numProcessors; ++i) {
-        processors.add(new Processor(i));
-      }
-
-      _processors = Collections.unmodifiableList(processors);
-    } while (false);
+    if (configBuilder.numProcessors <= 0) {
+      throw new IllegalArgumentException("Number of processors should be > 0");
+    }
+    _processorGroup = new ProcessorGroup(configBuilder.numProcessors);
 
     _finishedJobs = new ArrayList<Job>();
     _liveJobs = new HashSet<Job>();
 
 
-    _scheduler = configBuilder.schedulerBuilder.build(_processors);
+    _scheduler = configBuilder.schedulerBuilder.build(_processorGroup);
     _distribution = configBuilder.distribution;
+
+    _processorGroup.setScheduler(_scheduler);
 
     /*
      * Sporadic delays
      */
     _distributionSampler = new DistributionSampler(
-     _distribution, _config.getMaxSporadicDelay(), _config.getFreqScale(), seed);
+     _distribution, _config.getMaxSporadicDelay(), seed);
 
     _reoccuringTasks = new PriorityQueue(
      Comparator.comparing(SporadicReoccurence::restartInstant));
-    for (Task task : _tasks) {
+    for (Task task : _config.getTasks()) {
       _reoccuringTasks.add(new SporadicReoccurence(task, task.initialOffset()));
     }
 
@@ -102,6 +100,7 @@ public class Simulation
   runTick_ ()
   throws DeadlineMissedException
   {
+    System.out.println("curtime: "+_curTime);
     /*
      * Check deadlines first of all
      */
@@ -110,6 +109,8 @@ public class Simulation
         throw new DeadlineMissedException(job, _curTime);
       }
     }
+
+    _processorGroup.startTick(_curTime);
 
     for (SporadicReoccurence reocc = _reoccuringTasks.peek();
          reocc != null && reocc.restartInstant() <= _curTime;
@@ -120,8 +121,12 @@ public class Simulation
       Task task = reocc.task();
       Job job = Job.forTaskAndTime(task, _curTime);
       _liveJobs.add(job);
-      System.out.println(_curTime + ":: Job "+job.getPriority()+" activated");
+      //System.out.println(_curTime + ":: Job "+job.getPriority()+" activated");
       _scheduler.onActivate(job);
+
+      for (Tracker tracker : _trackers) {
+        tracker.onJobActivated(_curTime, job);
+      }
 
       /*
        * Remove this entry
@@ -135,29 +140,31 @@ public class Simulation
       int delay = _distributionSampler.getNext();
       restartInstant += delay;
       _reoccuringTasks.add(new SporadicReoccurence(task, restartInstant));
-      System.out.println("restart instant: "+restartInstant);
-    }
-    
-
-    List<Scheduler.Decision> decisions = _scheduler.schedule();
-
-    for (Scheduler.Decision decision : decisions) {
-      System.out.println(_curTime + " :: Decision: "+decision.job().getPriority());
-      /* XXX: misleading name "preempt" */
-      decision.processor().preempt(decision.job());
+      //System.out.println("restart instant: "+restartInstant);
     }
 
-    for (Processor proc : _processors) {
+    for (Processor proc : _processorGroup.getList()) {
       proc.tickStep().ifPresent(endedJob -> _finishedJobs.add(endedJob));
     }
 
     for (Job job : _finishedJobs) {
-      System.out.println(
-       _curTime + ":: Finished job! (priority "+job.getPriority()+")");
+      LOGGER.log(Level.FINER,
+       _curTime+" :: Terminated: "+job.getPriority());
+      for (Tracker tracker : _trackers) {
+        tracker.onJobTerminated(_curTime, job);
+      }
       _liveJobs.remove(job);
+      System.out.println(_curTime+" :term: "+job.getPriority());
       _scheduler.onTerminate(job);
     }
     _finishedJobs.clear();
+
+    List<Scheduler.Decision> decisions = _processorGroup.endTick(_curTime);
+
+    System.out.println(_curTime+" :: "+decisions.size());
+    for (Tracker tracker : _trackers) {
+      tracker.onSchedule(_curTime, decisions);
+    }
 
   }
 

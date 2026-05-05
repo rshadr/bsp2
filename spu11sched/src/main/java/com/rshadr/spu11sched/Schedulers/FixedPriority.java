@@ -13,7 +13,9 @@ import java.util.Collections;
 
 public final class FixedPriority extends Scheduler {
   private PriorityQueue<Job> _readyQueue;
-  private PriorityQueue<Processor> _processorQueue;
+  private ProcessorGroup _processorGroup;
+  //private final int[] _usedProcessors;
+  private ProcessorComparator _cmp = new ProcessorComparator();
 
 
   /*
@@ -23,27 +25,28 @@ public final class FixedPriority extends Scheduler {
   private static class ProcessorComparator implements Comparator<Processor> {
     public int
     compare (Processor a, Processor b) {
-      int keys[][] = {
-        { a.hasRunningJob() ? 1 : 0, a.getRunningJob().get().getPriority() },
-        { b.hasRunningJob() ? 1 : 0, b.getRunningJob().get().getPriority() },
-      };
 
-      if (keys[0][0] != keys[1][0]) {
-        return Integer.compare(keys[0][0], keys[1][0]);
+      if (!a.hasRunningJob()) {
+        return -1;
       }
 
-      return -Integer.compare(keys[0][1], keys[1][1]);
+      if (!b.hasRunningJob()) {
+        return +1;
+      }
+
+      return -Integer.compare(
+       a.getRunningJob().get().getPriority(),
+       b.getRunningJob().get().getPriority());
     }
   }
 
 
   private
-  FixedPriority (List<Processor> processors)
+  FixedPriority (ProcessorGroup processors)
   {
-    _readyQueue = new PriorityQueue<Job>(Comparator.comparing(Job::getPriority));
-
-    _processorQueue = new PriorityQueue<Processor>(new ProcessorComparator());
-    processors.forEach(p -> _processorQueue.add(p));
+    _readyQueue = new PriorityQueue<Job>(
+     Comparator.comparing(Job::getPriority).reversed());
+    _processorGroup = processors;
   }
 
 
@@ -51,45 +54,49 @@ public final class FixedPriority extends Scheduler {
   onActivate (Job job)
   {
     _readyQueue.add(job);
+    _processorGroup.reschedule();
   }
 
 
   public void
   onPreempt (Processor proc, Job preemptedJob)
   {
-    
+    /*
+     * XXX: why do we even have this
+     */
   }
 
 
   public void
   onTerminate (Job job)
   {
+    _processorGroup.reschedule();
   }
 
 
   public List<Decision>
   schedule ()
   {
+    /*
+     * Scheduling happens every time a job is activated or terminated
+     */
     ArrayList<Decision> decisions = new ArrayList<Decision>();
 
-    /*
-     * XXX: queue is not updated live!!! works for 1 core though
-     */
-    for (int i = 0;
-         _readyQueue.size() > 0 && i < _processorQueue.size();
-         ++i) {
-      Processor p = _processorQueue.peek();
-      Job pendingJob = _readyQueue.peek();
+    Processor p = Collections.min(_processorGroup.getList(), _cmp);
 
-      if (!p.hasRunningJob()
-       || p.getRunningJob().get().getPriority() > pendingJob.getPriority()) {
-        decisions.add(new Decision(p, pendingJob));
-        _readyQueue.remove(pendingJob);
+    Job pendingJob = _readyQueue.peek();
+    if (pendingJob == null) {
+      return List.of();
+    }
 
-        if (p.hasRunningJob()) {
-          _readyQueue.add(p.getRunningJob().get());
-        }
-      } else { break; }
+    if (!p.hasRunningJob()
+     || p.getRunningJob().get().getPriority() > pendingJob.getPriority()) {
+      decisions.add(new Decision(p, pendingJob));
+      _readyQueue.remove(pendingJob);
+
+      if (p.hasRunningJob()) {
+        _readyQueue.add(p.getRunningJob().get());
+      }
     }
 
     return Collections.unmodifiableList(decisions);
@@ -104,9 +111,9 @@ public final class FixedPriority extends Scheduler {
 
 
     public FixedPriority
-    build (List<Processor> processors)
+    build (ProcessorGroup processorGroup)
     {
-      FixedPriority fp = new FixedPriority(processors);
+      FixedPriority fp = new FixedPriority(processorGroup);
       return fp;
     }
   }

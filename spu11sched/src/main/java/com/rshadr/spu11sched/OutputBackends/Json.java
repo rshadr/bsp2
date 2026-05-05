@@ -24,11 +24,9 @@ public final class Json implements OutputBackend {
   outputTrackerDatas (List<Tracker.Data> trackerDatas)
   throws java.io.IOException
   {
-    for (Tracker.Data data : trackerDatas) {
-      _objectMapper
-       .writerWithDefaultPrettyPrinter()
-       .writeValue(System.out, data);
-    }
+    _objectMapper
+     .writerWithDefaultPrettyPrinter()
+     .writeValue(_outputStream, trackerDatas);
   }
 
 

@@ -5,27 +5,15 @@
 package com.rshadr.spu11sched;
 
 public class DeadlineMissedException extends Exception {
-  private final Job _job;
-  private final int _curTime;
+  protected final Job job;
+  protected final int curTime;
 
   protected
   DeadlineMissedException (Job job, int curTime) {
-    super();
-    _job = job;
-    _curTime = curTime;
+    super("Deadline missed for job "+job.getPriority());
+    this.job = job;
+    this.curTime = curTime;
   }
 
-  public Job
-  job ()
-  {
-    return _job;
-  }
-
-
-  public int
-  curTime ()
-  {
-    return _curTime;
-  }
 }
 

@@ -14,7 +14,7 @@ public abstract class Scheduler {
   public abstract List<Decision> schedule ();
 
   public static interface Builder {
-    public Scheduler build(List<Processor> processors);
+    public Scheduler build(ProcessorGroup processors);
   }
 }
 
