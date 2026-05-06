@@ -1,8 +1,19 @@
-[+] Use JSON instead of SPC for run specification (it's ugly)
 [+] Reflection to ensure "Data" classes for output are of valid fmt
 
 29.04.2026
 [ ] Add JSON Parser
 [ ] Fix skipped tick
 -> See Kanri
+
+06.05.2026
+[ ] Maven for test cases
+  - correct finish reason?
+  - check slack for correctness
+[ ] Testcase generator
+[ ] Test sporadicity
+[ ] Delay tracker (for debugging)
+[ ] Try with more tasks/processors
+[ ] Extend existing tests
+[ ] Empirical complexity analysis
+[ ] Clearly define return values/results of simulation (w/o trackers)
 

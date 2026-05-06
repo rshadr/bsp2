@@ -8,7 +8,7 @@ package com.rshadr.spu11sched;
 public record Task(
  int priority,
  int wcet,
- int initialOffset,
+ int initialStartTime,
  int relativeDeadline,
  int minIAT) {
   public
@@ -18,7 +18,7 @@ public record Task(
        "Task priority must be between 0 and "+(Configuration.MAX_TASKS - 1));
     }
 
-    if (initialOffset < 0) {
+    if (initialStartTime < 0) {
       throw new IllegalArgumentException("Initial offset must be 0 or greater");
     }
 
@@ -40,7 +40,7 @@ public record Task(
   static public final class Builder {
    private int _priority;
    private int _wcet;
-   private int _initialOffset;
+   private int _initialStartTime;
    private int _relativeDeadline;
    private int _minIAT;
 
@@ -49,7 +49,7 @@ public record Task(
     {
       _priority = -1;
       _wcet = -1;
-      _initialOffset = -1;
+      _initialStartTime = -1;
       _relativeDeadline = -1;
       _minIAT = -1;
     }
@@ -69,9 +69,9 @@ public record Task(
     }
 
     public Builder
-    initialOffset (int initialOffset)
+    initialStartTime (int initialStartTime)
     {
-      _initialOffset = initialOffset;
+      _initialStartTime = initialStartTime;
       return this;
     }
 
@@ -96,7 +96,7 @@ public record Task(
       return new Task(
        _priority,
        _wcet,
-       _initialOffset,
+       _initialStartTime,
        _relativeDeadline,
        _minIAT
       );

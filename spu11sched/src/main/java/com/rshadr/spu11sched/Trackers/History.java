@@ -83,8 +83,6 @@ public final class History extends Tracker
           _filteredDecisions.add(dec);
         }
       }
-
-      return;
     }
 
     Decision[] flatDecisions = new Decision[_filteredDecisions.size()];
@@ -104,6 +102,10 @@ public final class History extends Tracker
     _activatedJobs.clear();
     _terminatedJobs.clear();
     _filteredDecisions.clear();
+
+    for (int i = 0; i < _processorDecisionMap.length; ++i) {
+      _processorDecisionMap[i] = null;
+    }
   }
 
 
@@ -204,6 +206,7 @@ public final class History extends Tracker
     {
     }
 
+    @ConfigParam
     public Builder
     coerceSameTickDecisions (Boolean v)
     {

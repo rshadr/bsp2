@@ -75,7 +75,7 @@ public class Simulation
     _reoccuringTasks = new PriorityQueue(
      Comparator.comparing(SporadicReoccurence::restartInstant));
     for (Task task : _config.getTasks()) {
-      _reoccuringTasks.add(new SporadicReoccurence(task, task.initialOffset()));
+      _reoccuringTasks.add(new SporadicReoccurence(task, task.initialStartTime()));
     }
 
     _trackers = configBuilder.trackerBuilders

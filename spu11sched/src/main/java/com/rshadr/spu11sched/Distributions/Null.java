@@ -7,7 +7,7 @@ import com.rshadr.spu11sched.Distribution;
 
 
 public final class Null implements Distribution {
-  public
+  public /* XXX: make priv */
   Null ()
   {
   }
@@ -16,6 +16,19 @@ public final class Null implements Distribution {
   restartProbability (int forwardDelta)
   {
     return forwardDelta == 0 ? 1.0 : 0.0;
+  }
+
+  public final static class Builder extends Distribution.Builder {
+    public
+    Builder()
+    {
+    }
+
+    public Distribution
+    build ()
+    {
+      return new Null();
+    }
   }
 }
 

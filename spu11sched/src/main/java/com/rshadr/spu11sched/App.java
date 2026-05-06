@@ -11,6 +11,8 @@ import com.rshadr.spu11sched.OutputBackends.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.util.Scanner;
 
 
@@ -101,6 +103,30 @@ public class App
 
     return cfg;
   }
+
+
+  static private InputStream
+  makeStreamForFile (String fileName)
+  throws FileNotFoundException
+  {
+    if ("-".equals(fileName)) {
+      return System.in;
+    }
+
+    FileInputStream stream = new FileInputStream(fileName);
+    return stream;
+  }
+
+
+  static private Configuration.Builder
+  parseConfiguration (InputStream stream)
+  throws Exception
+  {
+    ConfigurationJsonParser cfgJsonParser = new ConfigurationJsonParser();
+
+    Configuration.Builder configBuilder = cfgJsonParser.parseStream(stream);
+    return configBuilder;
+  }
   
 
 
@@ -113,8 +139,12 @@ public class App
       System.exit(-1);
     }
 
+/*
     Scanner scanner = App.makeScannerForFile(args[0]);
     Configuration.Builder configBuilder = App.parseConfig(scanner);
+*/
+    InputStream stream = App.makeStreamForFile(args[0]);
+    Configuration.Builder configBuilder = App.parseConfiguration(stream);
 
     Simulation sim = Simulation.withConfigAndSeed(configBuilder, 121);
     try {

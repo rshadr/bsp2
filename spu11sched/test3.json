@@ -22,7 +22,7 @@
     {
       "name": "History",
       "options": {
-        "coerceSameTickDecisions": true
+        "coerceSameTickDecisions": false
       }
     },
 
@@ -35,7 +35,7 @@
   "tasks": [
     {
       "priority": 1,
-      "initialStartTime": 0,
+      "initialStartTime": 1,
       "wcet": 2,
       "relativeDeadline": 3,
       "minIAT": 3
