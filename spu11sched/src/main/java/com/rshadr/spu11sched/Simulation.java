@@ -24,6 +24,11 @@ public class Simulation
   private static final record SporadicReoccurence(
    Task task, int restartInstant){}
 
+  public static enum Result {
+    SUCCESS,
+    DEADLINE_MISSED
+  }
+
 
   private final Configuration _config;
 
@@ -100,7 +105,6 @@ public class Simulation
   runTick_ ()
   throws DeadlineMissedException
   {
-    System.out.println("curtime: "+_curTime);
     /*
      * Check deadlines first of all
      */
@@ -121,7 +125,8 @@ public class Simulation
       Task task = reocc.task();
       Job job = Job.forTaskAndTime(task, _curTime);
       _liveJobs.add(job);
-      //System.out.println(_curTime + ":: Job "+job.getPriority()+" activated");
+      LOGGER.log(Level.FINER,
+       _curTime+" :: Job "+job.getPriority()+" activated");
       _scheduler.onActivate(job);
 
       for (Tracker tracker : _trackers) {
@@ -140,7 +145,8 @@ public class Simulation
       int delay = _distributionSampler.getNext();
       restartInstant += delay;
       _reoccuringTasks.add(new SporadicReoccurence(task, restartInstant));
-      //System.out.println("restart instant: "+restartInstant);
+      LOGGER.log(Level.FINER,
+       _curTime+" :: Restart instant: "+restartInstant);
     }
 
     for (Processor proc : _processorGroup.getList()) {
@@ -154,14 +160,14 @@ public class Simulation
         tracker.onJobTerminated(_curTime, job);
       }
       _liveJobs.remove(job);
-      System.out.println(_curTime+" :term: "+job.getPriority());
       _scheduler.onTerminate(job);
     }
     _finishedJobs.clear();
 
     List<Scheduler.Decision> decisions = _processorGroup.endTick(_curTime);
 
-    System.out.println(_curTime+" :: "+decisions.size());
+    LOGGER.log(Level.FINER,
+     _curTime+" :: total decisions made: "+decisions.size());
     for (Tracker tracker : _trackers) {
       tracker.onSchedule(_curTime, decisions);
     }
@@ -169,9 +175,8 @@ public class Simulation
   }
 
 
-  public void
+  public Result
   run ()
-  throws DeadlineMissedException
   {
     _trackers.forEach(t -> t.onInitialize(_config));
 
@@ -181,16 +186,18 @@ public class Simulation
       }
       _trackerDatas = _trackers
        .stream()
-       .map((tracker) -> tracker.onFinish(_curTime, null))
+       .map((tracker) -> tracker.onFinish(_curTime, Result.SUCCESS))
        .collect(Collectors.toUnmodifiableList());
     } catch (DeadlineMissedException e) {
       _trackerDatas = _trackers
        .stream()
-       .map((tracker) -> tracker.onFinish(_curTime, e))
+       .map((tracker) -> tracker.onFinish(_curTime, Result.DEADLINE_MISSED))
        .collect(Collectors.toUnmodifiableList());
 
-      throw e;
+      return Result.DEADLINE_MISSED;
     }
+
+    return Result.SUCCESS;
   }
 
 

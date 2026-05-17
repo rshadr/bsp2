@@ -5,12 +5,14 @@
 package com.rshadr.spu11sched;
 import java.util.List;
 import java.util.ArrayList;
-/*
- * XXX: coercion
- */
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public final class History extends Tracker
 {
+  static private final Logger LOGGER =
+   Logger.getLogger(History.class.getName());
+
   static private final record Config(
    int maxDuration,
    int numProcessors,
@@ -34,7 +36,7 @@ public final class History extends Tracker
 
   static private final record Result(
     int finishTick,
-    Exception finishReason) {}
+    Simulation.Result result) {}
 
   private Config _config;
   private TrackerOptions _trackerOptions;
@@ -150,7 +152,7 @@ public final class History extends Tracker
       Decision dec = new Decision(
        d.processor().getId(),
        d.job().getPriority());
-      System.out.println("History schedule on tick "+t+
+      LOGGER.log(Level.FINE, "History schedule on tick "+t+
        dec.processor()+":"+dec.job());
 
       if (_trackerOptions.coerceSameTickDecisions()) {
@@ -163,7 +165,7 @@ public final class History extends Tracker
 
 
   public Data
-  onFinish (int t, Exception reason)
+  onFinish (int t, Simulation.Result result)
   {
     if (false) {
       if (_activatedJobs.size() > 0
@@ -174,7 +176,7 @@ public final class History extends Tracker
     }
     closeTick();
 
-    _result = new Result(t, reason);
+    _result = new Result(t, result);
 
     Data data = new Data(this);
     return data;
@@ -182,7 +184,7 @@ public final class History extends Tracker
 
 
   public static final class Data implements Tracker.Data {
-    public final String trackerName;
+    public final String trackerName = "History";
     public final Config config;
     public final List<Tick> ticks;
     public final Result result;
@@ -190,7 +192,6 @@ public final class History extends Tracker
     private
     Data(History history)
     {
-      trackerName = "History";
       config = history._config;
       ticks = history._ticks;
       result = history._result;

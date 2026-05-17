@@ -13,97 +13,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.FileInputStream;
-import java.util.Scanner;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 public class App
 {
-  private static Scanner
-  makeScannerForFile (String fileName)
-  throws FileNotFoundException
-  {
-    if (fileName.equals("-"))
-      return new Scanner(System.in);
-
-    File file = new File(fileName);
-
-    return new Scanner(file);
-  }
-
-
-  private static Configuration.Builder
-  parseConfig (Scanner scanner)
-  throws Exception
-  {
-    Configuration.Builder cfg = new Configuration.Builder();
-
-    do {
-      String firstLine = scanner.nextLine();
-      String[] parts = firstLine.split(" ");
-      if (parts.length != 5) {
-        throw new IllegalArgumentException("First line must contain 4 tokens");
-      }
-
-      int maxDuration = Integer.parseInt(parts[0]);
-      cfg.maxDuration(maxDuration);
-
-      int numProcessors = Integer.parseInt(parts[1]);
-      cfg.numProcessors(numProcessors);
-
-      int maxSporadicDelay = Integer.parseInt(parts[2]);
-      cfg.maxSporadicDelay(maxSporadicDelay);
-
-      /*
-       * XXX: Read scheduler off config
-       */
-      cfg.schedulerBuilder(new FixedPriority.Builder());
-
-      Distribution distribution = null;
-      if ("null".equals(parts[3])) {
-        /* ignore rest */
-        distribution = new Null();
-      } else if ("geometric".equals(parts[3])) {
-        double p = Double.parseDouble(parts[4]);
-        distribution = new Geometric.Builder().p(p).build();
-      } else if ("poisson".equals(parts[3])) {
-        int lambda = Integer.parseInt(parts[4]);
-        distribution = new Poisson.Builder().lambda(lambda).build();
-      } else {
-        throw new IllegalArgumentException("Invalid distribution name");
-      }
-      cfg.distribution(distribution);
-
-      /*
-       * XXX: Read trackers off config
-       */
-      cfg.addTrackerBuilder(new History.Builder());
-      cfg.addTrackerBuilder(new SlackTime.Builder());
-
-      /*
-       * XXX: Read output backend off config
-       */
-      Json.Builder jsonBuilder = new Json.Builder();
-      cfg.outputBackendBuilder(jsonBuilder);
-
-
-    } while (false);
-
-    while (scanner.hasNext()) {
-      String[] parts = scanner.nextLine().split(" ");
-
-      int a = Integer.parseInt(parts[0]);
-      int c = Integer.parseInt(parts[1]);
-      int p = Integer.parseInt(parts[2]);
-      int d = Integer.parseInt(parts[3]);
-      int t = Integer.parseInt(parts[4]);
-
-      Task task = new Task(p, c, a, d, t);
-      cfg.addTask(task);
-    }
-
-    return cfg;
-  }
-
+  private static final Logger LOGGER =
+   Logger.getLogger(App.class.getName());
 
   static private InputStream
   makeStreamForFile (String fileName)
@@ -135,7 +52,8 @@ public class App
   throws Exception
   {
     if (args.length != 1) {
-      System.err.println("Bad argument count; must be exactly 1");
+      LOGGER.log(Level.SEVERE,
+       "Bad argument count; must be exactly 1");
       System.exit(-1);
     }
 
@@ -147,9 +65,16 @@ public class App
     Configuration.Builder configBuilder = App.parseConfiguration(stream);
 
     Simulation sim = Simulation.withConfigAndSeed(configBuilder, 121);
-    try {
-      sim.run();
-    } catch (DeadlineMissedException e) {}
+
+    switch (sim.run()) {
+      case SUCCESS: {
+        break;
+      }
+      case DEADLINE_MISSED: {
+        break;
+      }
+    }
+
     sim.output();
   }
 }

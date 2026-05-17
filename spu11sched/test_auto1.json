@@ -1,0 +1,734 @@
+{
+  "maxDuration": 1000,
+  "numProcessors": 6,
+  "maxSporadicDelay": 7,
+
+  "distribution": {
+    "name": "Geometric",
+    "options": {
+      "p": 0.67
+    }
+  },
+
+  "trackers": [
+    {
+      "name": "History",
+      "options": {
+        "coerceSameTickDecisions": true
+      }
+    },
+
+    {
+      "name": "Delay",
+      "options": {}
+    },
+
+    {
+      "name": "SlackTime",
+      "options": {}
+    }
+  ],
+
+  "tasks": [
+    {
+      "priority": 0,
+      "initialStartTime": 6,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 7
+    },
+    {
+      "priority": 1,
+      "initialStartTime": 1,
+      "wcet": 3,
+      "relativeDeadline": 11,
+      "minIAT": 16
+    },
+    {
+      "priority": 2,
+      "initialStartTime": 3,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 2
+    },
+    {
+      "priority": 3,
+      "initialStartTime": 5,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 20
+    },
+    {
+      "priority": 4,
+      "initialStartTime": 9,
+      "wcet": 1,
+      "relativeDeadline": 3,
+      "minIAT": 7
+    },
+    {
+      "priority": 5,
+      "initialStartTime": 10,
+      "wcet": 4,
+      "relativeDeadline": 7,
+      "minIAT": 9
+    },
+    {
+      "priority": 6,
+      "initialStartTime": 4,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 11
+    },
+    {
+      "priority": 7,
+      "initialStartTime": 3,
+      "wcet": 1,
+      "relativeDeadline": 10,
+      "minIAT": 16
+    },
+    {
+      "priority": 8,
+      "initialStartTime": 10,
+      "wcet": 4,
+      "relativeDeadline": 5,
+      "minIAT": 19
+    },
+    {
+      "priority": 9,
+      "initialStartTime": 7,
+      "wcet": 3,
+      "relativeDeadline": 5,
+      "minIAT": 17
+    },
+    {
+      "priority": 10,
+      "initialStartTime": 7,
+      "wcet": 5,
+      "relativeDeadline": 6,
+      "minIAT": 14
+    },
+    {
+      "priority": 11,
+      "initialStartTime": 0,
+      "wcet": 5,
+      "relativeDeadline": 15,
+      "minIAT": 18
+    },
+    {
+      "priority": 12,
+      "initialStartTime": 7,
+      "wcet": 7,
+      "relativeDeadline": 9,
+      "minIAT": 11
+    },
+    {
+      "priority": 13,
+      "initialStartTime": 2,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 1
+    },
+    {
+      "priority": 14,
+      "initialStartTime": 6,
+      "wcet": 2,
+      "relativeDeadline": 6,
+      "minIAT": 11
+    },
+    {
+      "priority": 15,
+      "initialStartTime": 4,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 6
+    },
+    {
+      "priority": 16,
+      "initialStartTime": 6,
+      "wcet": 2,
+      "relativeDeadline": 5,
+      "minIAT": 6
+    },
+    {
+      "priority": 17,
+      "initialStartTime": 4,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 18
+    },
+    {
+      "priority": 18,
+      "initialStartTime": 9,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 6
+    },
+    {
+      "priority": 19,
+      "initialStartTime": 1,
+      "wcet": 3,
+      "relativeDeadline": 4,
+      "minIAT": 5
+    },
+    {
+      "priority": 20,
+      "initialStartTime": 7,
+      "wcet": 3,
+      "relativeDeadline": 7,
+      "minIAT": 9
+    },
+    {
+      "priority": 21,
+      "initialStartTime": 3,
+      "wcet": 3,
+      "relativeDeadline": 4,
+      "minIAT": 5
+    },
+    {
+      "priority": 22,
+      "initialStartTime": 3,
+      "wcet": 1,
+      "relativeDeadline": 13,
+      "minIAT": 20
+    },
+    {
+      "priority": 23,
+      "initialStartTime": 9,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 9
+    },
+    {
+      "priority": 24,
+      "initialStartTime": 5,
+      "wcet": 4,
+      "relativeDeadline": 5,
+      "minIAT": 7
+    },
+    {
+      "priority": 25,
+      "initialStartTime": 8,
+      "wcet": 3,
+      "relativeDeadline": 9,
+      "minIAT": 11
+    },
+    {
+      "priority": 26,
+      "initialStartTime": 5,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 2
+    },
+    {
+      "priority": 27,
+      "initialStartTime": 7,
+      "wcet": 3,
+      "relativeDeadline": 10,
+      "minIAT": 13
+    },
+    {
+      "priority": 28,
+      "initialStartTime": 10,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 1
+    },
+    {
+      "priority": 29,
+      "initialStartTime": 6,
+      "wcet": 4,
+      "relativeDeadline": 5,
+      "minIAT": 10
+    },
+    {
+      "priority": 30,
+      "initialStartTime": 4,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 10
+    },
+    {
+      "priority": 31,
+      "initialStartTime": 10,
+      "wcet": 3,
+      "relativeDeadline": 10,
+      "minIAT": 12
+    },
+    {
+      "priority": 32,
+      "initialStartTime": 10,
+      "wcet": 4,
+      "relativeDeadline": 8,
+      "minIAT": 8
+    },
+    {
+      "priority": 33,
+      "initialStartTime": 0,
+      "wcet": 6,
+      "relativeDeadline": 9,
+      "minIAT": 14
+    },
+    {
+      "priority": 34,
+      "initialStartTime": 10,
+      "wcet": 3,
+      "relativeDeadline": 4,
+      "minIAT": 4
+    },
+    {
+      "priority": 35,
+      "initialStartTime": 10,
+      "wcet": 6,
+      "relativeDeadline": 9,
+      "minIAT": 12
+    },
+    {
+      "priority": 36,
+      "initialStartTime": 10,
+      "wcet": 9,
+      "relativeDeadline": 11,
+      "minIAT": 20
+    },
+    {
+      "priority": 37,
+      "initialStartTime": 3,
+      "wcet": 2,
+      "relativeDeadline": 5,
+      "minIAT": 16
+    },
+    {
+      "priority": 38,
+      "initialStartTime": 7,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 4
+    },
+    {
+      "priority": 39,
+      "initialStartTime": 5,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 12
+    },
+    {
+      "priority": 40,
+      "initialStartTime": 10,
+      "wcet": 5,
+      "relativeDeadline": 9,
+      "minIAT": 9
+    },
+    {
+      "priority": 41,
+      "initialStartTime": 0,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 11
+    },
+    {
+      "priority": 42,
+      "initialStartTime": 0,
+      "wcet": 3,
+      "relativeDeadline": 5,
+      "minIAT": 5
+    },
+    {
+      "priority": 43,
+      "initialStartTime": 4,
+      "wcet": 2,
+      "relativeDeadline": 16,
+      "minIAT": 17
+    },
+    {
+      "priority": 44,
+      "initialStartTime": 2,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 6
+    },
+    {
+      "priority": 45,
+      "initialStartTime": 7,
+      "wcet": 4,
+      "relativeDeadline": 6,
+      "minIAT": 12
+    },
+    {
+      "priority": 46,
+      "initialStartTime": 3,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 8
+    },
+    {
+      "priority": 47,
+      "initialStartTime": 9,
+      "wcet": 8,
+      "relativeDeadline": 14,
+      "minIAT": 16
+    },
+    {
+      "priority": 48,
+      "initialStartTime": 8,
+      "wcet": 9,
+      "relativeDeadline": 11,
+      "minIAT": 14
+    },
+    {
+      "priority": 49,
+      "initialStartTime": 4,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 12
+    },
+    {
+      "priority": 50,
+      "initialStartTime": 9,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 5
+    },
+    {
+      "priority": 51,
+      "initialStartTime": 6,
+      "wcet": 1,
+      "relativeDeadline": 5,
+      "minIAT": 19
+    },
+    {
+      "priority": 52,
+      "initialStartTime": 6,
+      "wcet": 9,
+      "relativeDeadline": 16,
+      "minIAT": 19
+    },
+    {
+      "priority": 53,
+      "initialStartTime": 10,
+      "wcet": 7,
+      "relativeDeadline": 12,
+      "minIAT": 18
+    },
+    {
+      "priority": 54,
+      "initialStartTime": 8,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 4
+    },
+    {
+      "priority": 55,
+      "initialStartTime": 1,
+      "wcet": 6,
+      "relativeDeadline": 13,
+      "minIAT": 20
+    },
+    {
+      "priority": 56,
+      "initialStartTime": 2,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 11
+    },
+    {
+      "priority": 57,
+      "initialStartTime": 1,
+      "wcet": 3,
+      "relativeDeadline": 5,
+      "minIAT": 7
+    },
+    {
+      "priority": 58,
+      "initialStartTime": 10,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 5
+    },
+    {
+      "priority": 59,
+      "initialStartTime": 6,
+      "wcet": 3,
+      "relativeDeadline": 4,
+      "minIAT": 5
+    },
+    {
+      "priority": 60,
+      "initialStartTime": 3,
+      "wcet": 4,
+      "relativeDeadline": 6,
+      "minIAT": 9
+    },
+    {
+      "priority": 61,
+      "initialStartTime": 1,
+      "wcet": 3,
+      "relativeDeadline": 5,
+      "minIAT": 9
+    },
+    {
+      "priority": 62,
+      "initialStartTime": 0,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 11
+    },
+    {
+      "priority": 63,
+      "initialStartTime": 2,
+      "wcet": 2,
+      "relativeDeadline": 9,
+      "minIAT": 11
+    },
+    {
+      "priority": 64,
+      "initialStartTime": 10,
+      "wcet": 7,
+      "relativeDeadline": 17,
+      "minIAT": 17
+    },
+    {
+      "priority": 65,
+      "initialStartTime": 3,
+      "wcet": 1,
+      "relativeDeadline": 3,
+      "minIAT": 6
+    },
+    {
+      "priority": 66,
+      "initialStartTime": 5,
+      "wcet": 7,
+      "relativeDeadline": 10,
+      "minIAT": 19
+    },
+    {
+      "priority": 67,
+      "initialStartTime": 4,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 5
+    },
+    {
+      "priority": 68,
+      "initialStartTime": 3,
+      "wcet": 1,
+      "relativeDeadline": 20,
+      "minIAT": 20
+    },
+    {
+      "priority": 69,
+      "initialStartTime": 9,
+      "wcet": 9,
+      "relativeDeadline": 10,
+      "minIAT": 12
+    },
+    {
+      "priority": 70,
+      "initialStartTime": 1,
+      "wcet": 3,
+      "relativeDeadline": 10,
+      "minIAT": 11
+    },
+    {
+      "priority": 71,
+      "initialStartTime": 4,
+      "wcet": 3,
+      "relativeDeadline": 4,
+      "minIAT": 4
+    },
+    {
+      "priority": 72,
+      "initialStartTime": 2,
+      "wcet": 2,
+      "relativeDeadline": 5,
+      "minIAT": 17
+    },
+    {
+      "priority": 73,
+      "initialStartTime": 1,
+      "wcet": 8,
+      "relativeDeadline": 9,
+      "minIAT": 9
+    },
+    {
+      "priority": 74,
+      "initialStartTime": 9,
+      "wcet": 1,
+      "relativeDeadline": 3,
+      "minIAT": 7
+    },
+    {
+      "priority": 75,
+      "initialStartTime": 9,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 5
+    },
+    {
+      "priority": 76,
+      "initialStartTime": 7,
+      "wcet": 2,
+      "relativeDeadline": 6,
+      "minIAT": 8
+    },
+    {
+      "priority": 77,
+      "initialStartTime": 2,
+      "wcet": 3,
+      "relativeDeadline": 13,
+      "minIAT": 19
+    },
+    {
+      "priority": 78,
+      "initialStartTime": 1,
+      "wcet": 10,
+      "relativeDeadline": 11,
+      "minIAT": 13
+    },
+    {
+      "priority": 79,
+      "initialStartTime": 0,
+      "wcet": 4,
+      "relativeDeadline": 9,
+      "minIAT": 11
+    },
+    {
+      "priority": 80,
+      "initialStartTime": 5,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 2
+    },
+    {
+      "priority": 81,
+      "initialStartTime": 2,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 16
+    },
+    {
+      "priority": 82,
+      "initialStartTime": 10,
+      "wcet": 4,
+      "relativeDeadline": 5,
+      "minIAT": 5
+    },
+    {
+      "priority": 83,
+      "initialStartTime": 2,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 8
+    },
+    {
+      "priority": 84,
+      "initialStartTime": 8,
+      "wcet": 9,
+      "relativeDeadline": 11,
+      "minIAT": 11
+    },
+    {
+      "priority": 85,
+      "initialStartTime": 8,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 5
+    },
+    {
+      "priority": 86,
+      "initialStartTime": 3,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 2
+    },
+    {
+      "priority": 87,
+      "initialStartTime": 2,
+      "wcet": 1,
+      "relativeDeadline": 3,
+      "minIAT": 13
+    },
+    {
+      "priority": 88,
+      "initialStartTime": 6,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 6
+    },
+    {
+      "priority": 89,
+      "initialStartTime": 8,
+      "wcet": 2,
+      "relativeDeadline": 3,
+      "minIAT": 3
+    },
+    {
+      "priority": 90,
+      "initialStartTime": 10,
+      "wcet": 1,
+      "relativeDeadline": 3,
+      "minIAT": 11
+    },
+    {
+      "priority": 91,
+      "initialStartTime": 1,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 2
+    },
+    {
+      "priority": 92,
+      "initialStartTime": 6,
+      "wcet": 5,
+      "relativeDeadline": 11,
+      "minIAT": 16
+    },
+    {
+      "priority": 93,
+      "initialStartTime": 1,
+      "wcet": 3,
+      "relativeDeadline": 4,
+      "minIAT": 10
+    },
+    {
+      "priority": 94,
+      "initialStartTime": 9,
+      "wcet": 3,
+      "relativeDeadline": 5,
+      "minIAT": 16
+    },
+    {
+      "priority": 95,
+      "initialStartTime": 10,
+      "wcet": 2,
+      "relativeDeadline": 4,
+      "minIAT": 5
+    },
+    {
+      "priority": 96,
+      "initialStartTime": 8,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 8
+    },
+    {
+      "priority": 97,
+      "initialStartTime": 10,
+      "wcet": 4,
+      "relativeDeadline": 7,
+      "minIAT": 15
+    },
+    {
+      "priority": 98,
+      "initialStartTime": 7,
+      "wcet": 1,
+      "relativeDeadline": 2,
+      "minIAT": 3
+    },
+    {
+      "priority": 99,
+      "initialStartTime": 5,
+      "wcet": 1,
+      "relativeDeadline": 1,
+      "minIAT": 2
+    }
+  ]
+}

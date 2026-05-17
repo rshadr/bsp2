@@ -54,7 +54,7 @@ public final class SlackTime extends Tracker {
 
 
   public Data
-  onFinish (int t, Exception reason)
+  onFinish (int t, Simulation.Result result)
   {
     return new Data(this);
   }

@@ -13,7 +13,7 @@ public abstract class Tracker {
 
   public void onSchedule (int t, List<Scheduler.Decision> decisions) { };
   
-  public abstract Data onFinish (int t, Exception reason);
+  public abstract Data onFinish (int t, Simulation.Result result);
 
   public static interface Data {
   };

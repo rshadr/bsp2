@@ -55,7 +55,8 @@ class ConfigurationJsonParser
 
   static private final Class[] _trackerClasses = {
     History.class,
-    SlackTime.class
+    SlackTime.class,
+    Delay.class
   };
 
   private ObjectMapper _mapper = new ObjectMapper();

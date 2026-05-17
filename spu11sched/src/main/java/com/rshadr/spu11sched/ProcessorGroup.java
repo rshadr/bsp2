@@ -87,13 +87,6 @@ public class ProcessorGroup
     List<Scheduler.Decision> decisions = sched.schedule();
     for (Scheduler.Decision d : decisions) {
       /* XXX: log (level debug */
-/*
-      System.out.println(_curTime+" :: Decision: "+d.processor().getId()+";"+
-       d.job().getPriority());
-*/
-      System.out.println(_curTime+" :: Decision: "+
-       d.processor().getId()+";"+d.job().getPriority());
-
       LOGGER.log(Level.FINER, _curTime+" :: Decision: "+
        d.processor().getId()+";"+d.job().getPriority());
       /* XXX: misleading name "preempt" */

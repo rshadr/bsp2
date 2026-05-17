@@ -12,6 +12,7 @@ final class DistributionSampler {
   private final int _maxDelay;
   private final double[] _cdfArray;
   private final long _seed;
+  private final double _fixedMean;
 
 
   protected
@@ -24,18 +25,28 @@ final class DistributionSampler {
     _random = new Random(_seed);
     _cdfArray = new double[_maxDelay + 1];
 
+    final double maxDelayInv = 1.0 / _maxDelay;
     double cdfY = 0.0;
+    double fixedMean = 0.0;
     for (int i = 0; i <= _maxDelay; ++i) {
-      cdfY += _distribution.restartProbability(i);
+      double pi = _distribution.restartProbability(i);
+      cdfY += pi;
       _cdfArray[i] = cdfY;
+      //System.out.println("[CDF] "+i+": "+cdfY);
+
+      /* XXX: mean formula??? */
+      fixedMean += pi;
     }
+    fixedMean /= _cdfArray[_maxDelay];
+
+    _fixedMean = fixedMean;
   }
 
 
   protected int
   getNext ()
   {
-    double v = _random.nextDouble();
+    double v = _random.nextDouble() * _cdfArray[_maxDelay];
 
     int i = 0;
     for (; i <= _maxDelay; ++i) {
@@ -46,6 +57,13 @@ final class DistributionSampler {
 
     /* unreachable? */
     return _maxDelay;
+  }
+
+
+  protected double
+  getFixedMean ()
+  {
+    return _fixedMean;
   }
 }
 

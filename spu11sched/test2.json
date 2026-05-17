@@ -29,6 +29,11 @@
     {
       "name": "SlackTime",
       "options": {}
+    },
+
+    {
+      "name": "Delay",
+      "options": {}
     }
   ],
 

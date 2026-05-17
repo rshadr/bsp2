@@ -4,6 +4,7 @@
  */
 package com.rshadr.spu11sched.Distributions;
 import com.rshadr.spu11sched.Distribution;
+import com.rshadr.spu11sched.ConfigParam;
 
 
 public final class Geometric implements Distribution {
@@ -33,6 +34,7 @@ public final class Geometric implements Distribution {
       _p = 0.5;
     }
 
+    @ConfigParam
     public Builder
     p (double p)
     throws IllegalArgumentException

@@ -1,19 +1,23 @@
 [+] Reflection to ensure "Data" classes for output are of valid fmt
 
-29.04.2026
-[ ] Add JSON Parser
-[ ] Fix skipped tick
--> See Kanri
-
 06.05.2026
 [ ] Maven for test cases
   - correct finish reason?
   - check slack for correctness
 [ ] Testcase generator
 [ ] Test sporadicity
-[ ] Delay tracker (for debugging)
+  - run long simulation
+  - e.g. take Poisson lambda=3 and compare
+  - param of poisson is average (check with epsilon)
+  - mean, variance, (skewness?)
+  - org.apache.commons.statistics.descriptive
+  - when unit testing sporadicity, mean may not be fitting due
+[x] Delay tracker (for debugging)
 [ ] Try with more tasks/processors
 [ ] Extend existing tests
 [ ] Empirical complexity analysis
-[ ] Clearly define return values/results of simulation (w/o trackers)
+[x] Clearly define return values/results of simulation (w/o trackers)
 
+
+Testing:
+  - Test medium-size example at low duration, then increase

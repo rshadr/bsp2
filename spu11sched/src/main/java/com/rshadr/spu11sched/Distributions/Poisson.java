@@ -4,6 +4,7 @@
  */
 package com.rshadr.spu11sched.Distributions;
 import com.rshadr.spu11sched.Distribution;
+import com.rshadr.spu11sched.ConfigParam;
 
 
 public final class Poisson implements Distribution {
@@ -48,6 +49,7 @@ public final class Poisson implements Distribution {
     }
 
 
+    @ConfigParam
     public Builder
     lambda (int lambda)
     throws IllegalArgumentException
