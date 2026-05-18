@@ -296,6 +296,21 @@ tgState_generate (TgState *tgs, TgConfig const *cfg)
 
 
 static void
+tgState_outputScheduler (TgState *tgs, FILE *outfile)
+{
+  (void) tgs;
+
+  fprintf(outfile,
+"  \"scheduler\": {\n"
+"    \"name\": \"FixedPriority\",\n"
+"    \"options\": {}\n"
+"  },\n"
+"\n"
+  );
+}
+
+
+static void
 tgState_outputDistribution (TgState *tgs, FILE *outfile)
 {
   (void) tgs;
@@ -305,6 +320,21 @@ tgState_outputDistribution (TgState *tgs, FILE *outfile)
 "    \"options\": {\n"
 "      \"p\": 0.67\n"
 "    }\n"
+"  },\n"
+"\n"
+  );
+}
+
+
+static void
+tgState_outputOutputBackend (TgState *tgs, FILE *outfile)
+{
+  (void) tgs;
+
+  fprintf(outfile,
+"  \"outputBackend\": {\n"
+"    \"name\": \"Json\",\n"
+"    \"options\": {}\n"
 "  },\n"
 "\n"
   );
@@ -359,7 +389,9 @@ tgState_output (TgState *tgs, FILE *outfile)
   cfg->max_duration, cfg->num_processors, cfg->max_sporadic_delay
   );
 
+  tgState_outputScheduler(tgs, outfile);
   tgState_outputDistribution(tgs, outfile);
+  tgState_outputOutputBackend(tgs, outfile);
 
   tgState_outputTrackers(tgs, outfile);
 

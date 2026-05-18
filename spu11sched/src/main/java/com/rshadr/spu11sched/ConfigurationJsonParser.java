@@ -120,26 +120,31 @@ class ConfigurationJsonParser
           Class modType = paramTypes[0];
 
           Object v = null;
+          Class vType = null;
 
           switch (prop.getValue().getNodeType()) {
             case BOOLEAN: {
               v = prop.getValue().asBoolean();
+              vType = Boolean.class;
               break;
             }
 
             case STRING: {
-              v = prop.getValue().asText();
+              v = (String)(prop.getValue().asText());
+              vType = String.class;
               break;
             }
 
             case NUMBER: {
               if (prop.getValue().isDouble()) {
-                v = prop.getValue().doubleValue();
+                v = (double)(prop.getValue().doubleValue());
+                vType = Double.TYPE;
                 break;
               }
 
               if (prop.getValue().isInt()) {
-                v = prop.getValue().intValue();
+                v = (int)(prop.getValue().intValue());
+                vType = Integer.TYPE;
                 break;
               }
 
@@ -156,7 +161,8 @@ class ConfigurationJsonParser
             }
           }
 
-          if (! modType.equals(v.getClass()) ) {
+          if (! modType.equals(vType) ) {
+            System.out.println("mod: "+modType+"; vType: "+vType);
             throw new IllegalArgumentException(
              "type mismatch for builder modifier"
             );

@@ -27,7 +27,7 @@ public final class Delay extends Tracker {
   onInitialize (Configuration config)
   {
     for (Task t : config.getTasks()) {
-      int index = t.priority() - 1;
+      int index = t.priority();
       _delaysPerTasks.add(index, new ArrayList<Integer>());
       _minRestartInstants[index] = t.initialStartTime();
     }
@@ -38,7 +38,7 @@ public final class Delay extends Tracker {
   public void
   onJobActivated (int t, Job job)
   {
-    int index = job.getPriority() - 1;
+    int index = job.getPriority();
     int delay = job.getStartInstant() - _minRestartInstants[index];
 
     _delaysPerTasks.get(index).add(delay);
@@ -79,7 +79,7 @@ public final class Delay extends Tracker {
           continue;
         }
 
-        entries.add(new Entry(i + 1, delays));
+        entries.add(new Entry(i, delays));
       }
     }
   }

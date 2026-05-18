@@ -29,7 +29,7 @@ public final class SlackTime extends Tracker {
     for (Task task : tasks) {
       int worstSlackTime = task.relativeDeadline() - task.wcet() + 1;
 
-      _entries[task.priority() - 1] =
+      _entries[task.priority()] =
        new Entry(task, new int[worstSlackTime + 1]);
     }
 
@@ -48,7 +48,7 @@ public final class SlackTime extends Tracker {
   onJobTerminated (int t, Job job)
   {
     int slack = getSlack(t, job);
-    Entry e = _entries[job.getPriority() - 1];
+    Entry e = _entries[job.getPriority()];
     e.table()[slack] += 1;
   }
 

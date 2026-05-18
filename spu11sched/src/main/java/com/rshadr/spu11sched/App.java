@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -23,7 +25,7 @@ public class App
    Logger.getLogger(App.class.getName());
 
   static private InputStream
-  makeStreamForFile (String fileName)
+  makeInStreamForFile (String fileName)
   throws FileNotFoundException
   {
     if ("-".equals(fileName)) {
@@ -61,7 +63,7 @@ public class App
     Scanner scanner = App.makeScannerForFile(args[0]);
     Configuration.Builder configBuilder = App.parseConfig(scanner);
 */
-    InputStream stream = App.makeStreamForFile(args[0]);
+    InputStream stream = App.makeInStreamForFile(args[0]);
     Configuration.Builder configBuilder = App.parseConfiguration(stream);
 
     Simulation sim = Simulation.withConfigAndSeed(configBuilder, 121);
